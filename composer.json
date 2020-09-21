@@ -1,0 +1,18 @@
+{
+    "name": "andre/phpunit",
+    "authors": [
+        {
+            "name": "ATCamposs",
+            "email": "andre.tatibano@gmail.com"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "SON\\": "src/"
+        }
+    }
+}
