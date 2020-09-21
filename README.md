@@ -37,3 +37,7 @@ se precisa desconstruir algo a cada teste. fazer dentro de
 protected function tearDown()
 
 para destruir todo o ambiente após o teste usar o tearDownAdterClass()
+
+Para ver cada teste sendo executado podemos usar o comando --debug junto com o phpunit
+
+Para ver o resultado colorido adicionar o comando --colors
