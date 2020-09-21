@@ -4,18 +4,18 @@ use SON\Model\Product;
 
 class ProductDBTest extends PHPUnit\Framework\TestCase
 {
+    private $db;
+
+    protected function setUp()
+    {
+        $this->db = getPDO();
+    }
     //desativa destruição automatica após primeiro metodo.
-    protected $backupGlobals = false;
+    //protected $backupGlobals = false;
 
     public function testIfProductIsSaved()
     {
-        global $db;
-        $product = new Product($db);
-        $result = $product->save([
-            'name' => 'Produto 1',
-            'price' => 200.20,
-            'quantity' => 10
-        ]);
+        $result = $this->createProduct();
 
         $this->assertEquals(1, $result->getId());
         $this->assertEquals('Produto 1', $result->getName());
@@ -27,13 +27,12 @@ class ProductDBTest extends PHPUnit\Framework\TestCase
 
     public function testIfListProducts()
     {
-        global $db;
+        $db = $this->db;
         $product = new Product($db);
-        $product->save([
-            'name' => 'Produto 1',
-            'price' => 200.20,
-            'quantity' => 10
-        ]);
+
+        $this->createProduct();
+        $this->createProduct();
+
         $products = $product->all();
         $this->assertCount(2, $products);
     }
@@ -43,7 +42,7 @@ class ProductDBTest extends PHPUnit\Framework\TestCase
      */
     public function testIfProductIsUpdated($id)
     {
-        global $db;
+        $db = $this->db;
         $product = new Product($db);
         $result = $product->save([
             'id' => $id,
@@ -60,17 +59,59 @@ class ProductDBTest extends PHPUnit\Framework\TestCase
         return $id;
     }
 
-    /**
+    /*
      * @depends testIfProductIsUpdated
      */
-    public function testIfProductCanDeleted($id)
+    //public function testIfProductCanBeRecovered($id)
+    public function testIfProductCanBeRecovered()
     {
-        global $db;
+        $this->createProduct();
+        $db = $this->db;
         $product = new Product($db);
-        $result = $product->delete($id);
+        $result = $product->find(1);
+
+        $this->assertEquals(1, $result->getId());
+        $this->assertEquals('Produto 1', $result->getName());
+        $this->assertEquals(200.20, $result->getPrice());
+        $this->assertEquals(10, $result->getQuantity());
+        $this->assertEquals(200.20*10, $result->getTotal());
+    }
+
+    /*
+     * @depends testIfProductIsUpdated
+     * @expectedExceptionMessage Produto não existente
+     */
+    //public function testIfProductCanDeleted($id)
+    public function testIfProductCanDeleted()
+    {
+        $this->createProduct();
+        $db = $this->db;
+        $product = new Product($db);
+        $result = $product->delete(1);
 
         $this->assertTrue($result);
         $products = $product->all();
-        $this->assertCount(1, $products);
+        $this->assertCount(0, $products);
+    }
+
+    /**
+     * @expectedException \Exception 
+     */
+    public function testIfProductnotFound()
+    {
+        $db = $this->db;
+        $product = new Product($db);
+        $result = $product->find(255);
+    }
+
+    private function createProduct()
+    {
+        $db = $this->db;
+        $product = new Product($db);
+        return $product->save([
+            'name' => 'Produto 1',
+            'price' => 200.20,
+            'quantity' => 10
+        ]);
     }
 }
