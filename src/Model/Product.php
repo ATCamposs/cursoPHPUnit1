@@ -104,4 +104,12 @@ class Product
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
+
+    public function delete(int $id): bool
+    {
+        $query = "DELETE FROM products WHERE id = :id";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindValue(":id", $id);
+        return $stmt->execute();
+    }
 }
