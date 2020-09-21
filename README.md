@@ -4,7 +4,9 @@ Os metodos devem começar com test nome do teste,
 podem ser tanto camel case quanto snake case.
 
 O metodo correto para se usar o phpunit instalado na maquina(não via composer) é:
+
 phpunit --bootstrap=vendor/autoload.php pastaTeste/ArquivoTeste.php
+
 
 
 **declare(strict_types = 1); **
@@ -28,15 +30,20 @@ doc para avisar de mensagem esperada na exception
 
 
 se precisar fazer alguma configuração global para toda a classe de teste. fazer dentro do:
+
 public static setUpBeforeClass()
 
 Se precisar fazer uma configuração para ser acionada antes de cada metodo de teste fazer dentro do:
+
 protected function setUp()
 
 se precisa desconstruir algo a cada teste. fazer dentro de
+
 protected function tearDown()
 
-para destruir todo o ambiente após o teste usar o tearDownAdterClass()
+para destruir todo o ambiente após o teste usar o
+
+tearDownAdterClass()
 
 Para ver cada teste sendo executado podemos usar o comando --debug junto com o phpunit
 
